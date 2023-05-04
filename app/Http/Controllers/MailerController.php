@@ -71,14 +71,14 @@ class MailerController extends Controller
                 }
 
                 $customers = Customer::where('used', false)->where('email_list_id', $request->list)->take($takeCustomers)->get();
-                //dd($customers->pluck('email'));
+                
     			$transport = new EsmtpTransport('smtp-mail.outlook.com', 587);
-	    		$transport->setUsername(/*$email->email*/'tarik.vreto97@hotmail.com');
-	    		$transport->setPassword(/*$email->password*/'PassatCC');
+	    		$transport->setUsername($email->email);
+	    		$transport->setPassword($email->password);
 
 	    		$mailer = new Mailer($transport);
 
-	    		$mailable = (new SymfonyEmail())->from(/*$email->email*/'tarik.vreto97@hotmail.com')->bcc(...['tarik.vreto97@hotmail.com', 'tarik@fibula.ba'])->subject($request->subject)->html($template->body);
+	    		$mailable = (new SymfonyEmail())->from($email->email)->bcc(...$customers->pluck('email')->toArray())->subject($request->subject)->html($template->body);
 
 	   			$mailer->send($mailable);
 
